@@ -3,7 +3,7 @@
   "name": "io.github.timgutberlet/hallofelix",
   "title": "HalloFelix von InsurMagic",
   "description": "HalloFelix von InsurMagic: AI phone & WhatsApp assistant for insurance brokers.",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "websiteUrl": "https://www.hallofelix.de",
   "repository": {
     "url": "https://github.com/timgutberlet/hallofelix-mcp",
