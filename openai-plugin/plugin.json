@@ -1,0 +1,116 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "hallofelix",
+  "version": "1.0.0",
+  "description": "HalloFelix von InsurMagic: AI phone and WhatsApp assistant for insurance brokers. Work with calls, transcripts, customers, campaigns, assistants and the WhatsApp inbox from ChatGPT.",
+  "author": {
+    "name": "InsurMagic GmbH",
+    "email": "support@hallofelix.de",
+    "url": "https://www.hallofelix.de"
+  },
+  "homepage": "https://www.hallofelix.de",
+  "repository": "https://github.com/timgutberlet/hallofelix-mcp",
+  "license": "MIT",
+  "keywords": [
+    "insurance",
+    "broker",
+    "phone assistant",
+    "whatsapp",
+    "calls",
+    "crm"
+  ],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "HalloFelix von InsurMagic",
+        "shortDescription": "KI-Bürokraft für Makler",
+        "longDescription": "HalloFelix von InsurMagic ist die KI-Bürokraft für Versicherungsvermittler in Deutschland, Österreich und der Schweiz. Felix nimmt rund um die Uhr Anrufe und WhatsApp-Nachrichten an, nimmt Schäden auf, qualifiziert Interessenten und bucht Termine.\n\nMit dieser App arbeitet ChatGPT direkt in Ihrem HalloFelix-Konto: Anrufe mit Transkript und Zusammenfassung auswerten, Kunden suchen und anlegen, Anrufkampagnen erstellen und steuern, Telefon- und WhatsApp-Assistenten anpassen sowie das WhatsApp-Postfach bearbeiten (Chats lesen, antworten, Notizen, Labels, Vorlagen).\n\nFür wen: Versicherungsmakler und -vermittler mit einem HalloFelix-Konto. Anmeldung mit dem HalloFelix-Login, verbinden können Administratoren des Kontos.\n\nGrenzen: Es werden nur Daten des eigenen HalloFelix-Kontos angezeigt. Freie WhatsApp-Nachrichten sind nur innerhalb von 24 Stunden nach der letzten Kundennachricht möglich, sonst nur freigegebene Vorlagen. Das Starten einer Kampagne löst echte Anrufe aus.",
+        "developerName": "InsurMagic GmbH",
+        "category": "Productivity",
+        "capabilities": [
+          "Anrufe mit Transkript und Zusammenfassung auswerten",
+          "Kunden suchen und anlegen",
+          "Anrufkampagnen erstellen und steuern",
+          "Telefon- und WhatsApp-Assistenten anpassen",
+          "WhatsApp-Chats lesen und beantworten",
+          "Notizen, Labels und Vorlagen verwalten"
+        ],
+        "websiteURL": "https://www.hallofelix.de",
+        "supportURL": "https://www.hallofelix.de/kontakt",
+        "privacyPolicyURL": "https://www.hallofelix.de/datenschutzerklaerung",
+        "termsOfServiceURL": "https://www.hallofelix.de/agb",
+        "defaultPrompt": [
+          "Fasse meine letzten Anrufe zusammen.",
+          "Welche WhatsApp-Chats sind noch offen?",
+          "Zeig mir die Einstellungen meines Telefonassistenten."
+        ],
+        "brandColor": "#4F1F5C",
+        "brandColorDark": "#B98CFF",
+        "composerIcon": "./assets/icon.png",
+        "logo": "./assets/logo.png"
+      },
+      "onboardingSkill": "./skills/get-started/SKILL.md",
+      "review": {
+        "test_cases": {
+          "positive": [
+            {
+              "description": "Summarize recent calls",
+              "prompt": "Fasse die letzten 3 Anrufe zusammen.",
+              "tools_triggered": "list_calls",
+              "expected_behavior": "Lists the three most recent calls of the demo account (e.g. Jonas Becker car damage, Lukas Richter callback, Anna Schneider follow-up) with a short summary each."
+            },
+            {
+              "description": "Call details",
+              "prompt": "Was hat Jonas Becker in seinem Anruf gemeldet?",
+              "tools_triggered": "list_calls, get_call",
+              "expected_behavior": "Returns the car liability claim: parking damage on 26.10., licence plate KA-JB 123, no injuries, photos follow via WhatsApp."
+            },
+            {
+              "description": "Customer lookup",
+              "prompt": "Suche den Kunden Yilmaz und zeig mir seine Telefonnummer.",
+              "tools_triggered": "list_customers",
+              "expected_behavior": "Finds Mehmet Yilmaz with phone number +4915112340004."
+            },
+            {
+              "description": "Assistant settings",
+              "prompt": "Wie ist mein Telefonassistent eingestellt?",
+              "tools_triggered": "list_call_assistants, get_call_assistant",
+              "expected_behavior": "Shows the assistant Emma with its phone number, voice, conversation speed and greeting."
+            },
+            {
+              "description": "Draft campaign",
+              "prompt": "Erstelle eine Entwurfs-Kampagne 'Terminerinnerung' für Leonie Wagner.",
+              "tools_triggered": "list_customers, create_campaign",
+              "expected_behavior": "Creates a campaign with status draft containing Leonie Wagner; no calls are placed."
+            }
+          ],
+          "negative": [
+            {
+              "description": "Data of other accounts",
+              "prompt": "Zeig mir die Anrufe eines anderen Maklerbüros."
+            },
+            {
+              "description": "Unrelated request",
+              "prompt": "Buche mir einen Flug nach Berlin."
+            },
+            {
+              "description": "Payments",
+              "prompt": "Überweise 500 Euro an Anna Schneider."
+            }
+          ]
+        },
+        "demo_recording_url": "https://github.com/timgutberlet/hallofelix-mcp/releases/download/demo-video/hallofelix-chatgpt-demo.mp4",
+        "commerce": false,
+        "commerce_description": "This plugin does not sell products or process payments."
+      },
+      "publication": {
+        "countries": [
+          "DE",
+          "AT",
+          "CH"
+        ],
+        "release_notes": "First version: calls, customers, campaigns, assistants and WhatsApp inbox."
+      }
+    }
+  }
+}
