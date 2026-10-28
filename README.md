@@ -103,6 +103,7 @@ codex mcp login hallofelix
 | `list_customers` | Lists customers (contacts the AI calls or chats with) with phone numbers, call count and last call time | read |
 | `get_customer` | Full customer record | read |
 | `create_customer` | Creates a customer | write |
+| `import_customers` | Creates up to 500 customers in one call | write |
 | `update_customer` | Edits a customer: names, e-mail, language, external id, call handling and WhatsApp AI exclusion | write, destructive |
 | `delete_customer` | Permanently deletes a customer with phone numbers, notes, appointments and memory | write, destructive |
 | `add_customer_phone_number` | Adds a phone number to a customer | write |
@@ -139,6 +140,9 @@ codex mcp login hallofelix
 | `retry_whatsapp_macro_run` | Sends the macro run document to the customer again over WhatsApp | write |
 | `test_whatsapp_assistant` | Sends a test message to a WhatsApp assistant and returns its simulated reply (or the macro it would fire) | write |
 | `list_users` | Lists the team members a WhatsApp chat can be assigned to (their id is the assigned_user_id of a chat) | read |
+| `get_member_limit` | The account's member limit from its subscription, the number of billable members and whether another member can be invited | read |
+| `invite_team_member` | Adds a person to the HalloFelix account and sends them an invitation e-mail (new users get a sign-in link) | write |
+| `remove_team_member` | Removes a member from the account: they lose access, their per-user data in this account (push subscriptions, read state, voice clip, Keasy connection) is deleted and the WhatsApp chats assigned to them become unassigned | write, destructive |
 | `list_whatsapp_accounts` | Lists the connected WhatsApp business numbers (inboxes) with their inbox settings | read |
 | `get_whatsapp_account` | One connected WhatsApp business number with its inbox settings (AI, read receipts, automated messages, opening hours, AI schedule, assistant) | read |
 | `list_whatsapp_conversations` | Lists WhatsApp chats with labels, customer, assignment and last message | read |
@@ -149,6 +153,7 @@ codex mcp login hallofelix
 | `start_whatsapp_conversation` | Sends an approved template to a phone number, creating the contact and chat if needed (new chats always need a template) | write |
 | `list_whatsapp_notes` | Internal team notes of a WhatsApp chat (never sent to the customer) | read |
 | `add_whatsapp_note` | Adds an internal team note to a WhatsApp chat | write |
+| `add_whatsapp_voice_note` | Adds an internal voice note to a WhatsApp chat: a WebM or Ogg recording (max. 10 MB, max. 5 minutes) downloaded from a public HTTPS URL is stored and transcribed, and the transcript becomes the note text | write |
 | `list_whatsapp_labels` | All WhatsApp conversation labels of the account | read |
 | `add_whatsapp_conversation_labels` | Adds labels to a chat and keeps the existing ones | write |
 | `set_whatsapp_conversation_labels` | Replaces all labels of a chat (an empty list removes all) | write, destructive |
@@ -169,17 +174,41 @@ codex mcp login hallofelix
 | `get_calendar` | One connected calendar with the appointments HalloFelix booked into it | read |
 | `update_calendar` | Renames a connected calendar in HalloFelix | write, destructive |
 | `delete_calendar` | Disconnects a calendar: assistants stop checking and booking it, and the provider connection is revoked when no other calendar uses it (reconnecting needs the dashboard) | write, destructive |
-| `list_calendar_events` | Busy times of a connected calendar between from and to (ISO-8601, at most 92 days, max | read |
+| `list_calendar_events` | Busy times of a connected calendar between from and to (ISO-8601, at most 92 days, max. 200 events) | read |
 | `book_calendar_appointment` | Books an appointment into the real connected calendar of the business (fails with 409 slot_taken if the slot is busy) | write |
 | `get_account` | Company profile and locations the assistants use, recording settings (save_audio_recording, recording_retention_days) and the customer memory switch | read |
 | `update_account` | Changes company settings | write, destructive |
 | `get_crm_ai_access` | Whether the WhatsApp AI may look up customer data in the connected CRM, which parts (contracts, damages, Vorgänge, master data, health lines) and the CRM connections | read |
-| `update_crm_ai_access` | Changes the CRM data access of the AI. Send only the fields to change | write, destructive |
+| `update_crm_ai_access` | Changes the CRM data access of the AI | write, destructive |
 | `list_documents` | Lists the knowledge documents (PDF/DOCX) the assistants answer from, with their status (processing, done, failed) | read |
 | `delete_document` | Deletes a knowledge document; the assistants no longer answer from it | write, destructive |
+| `upload_document` | Adds a knowledge document the assistants answer from: a PDF or Word (.docx) file of max. 1 MB, downloaded from a public HTTPS URL | write |
+| `get_assistant_voice_intro` | Whether a call assistant plays a recorded greeting instead of its spoken first sentence, with the file name and a playback link valid for 60 minutes | read |
+| `upload_assistant_voice_intro` | Sets or replaces the recorded greeting a call assistant plays at the start of calls (MP3, WAV or WebM, max. 2 MB), downloaded from a public HTTPS URL | write, destructive |
+| `delete_assistant_voice_intro` | Deletes the recorded greeting of a call assistant; it speaks its text first sentence again | write, destructive |
+| `get_campaign_voice_intro` | Whether a campaign's calls start with a recorded first sentence, with the file name and a playback link valid for 60 minutes | read |
+| `upload_campaign_voice_intro` | Sets or replaces the recorded first sentence of a campaign's calls (MP3, WAV or WebM, max. 2 MB), downloaded from a public HTTPS URL | write, destructive |
+| `delete_campaign_voice_intro` | Deletes the recorded first sentence of a campaign; its calls use the text first sentence again | write, destructive |
+| `add_whatsapp_pdf_template` | Adds a PDF (max. 16 MB, downloaded from a public HTTPS URL) to a WhatsApp assistant | write |
+| `delete_whatsapp_pdf_template` | Removes a PDF from a WhatsApp assistant and deletes the stored file | write, destructive |
+| `set_whatsapp_template_header_media` | Sets or replaces the default header file of a WhatsApp template with an image, video or document header, used when the template is sent without its own file: JPEG/PNG max. 5 MB, MP4/3GPP max. 16 MB or PDF max. 16 MB, downloaded from a public HTTPS URL | write, destructive |
+| `delete_whatsapp_template_header_media` | Removes the default header file of a WhatsApp template; sending the template then needs its own file | write, destructive |
 | `get_insights` | Dashboard KPIs for a date range (default: last 30 days) compared with the period before: calls, call length and minutes, e-mails, WhatsApp messages (all / AI), a daily chart, open items, company figures and the Vorgang distribution | read |
+| `get_crm_connection` | Whether a CRM (Professional Works, blau direkt, arisecur, VEMA or JDC / iCRM) is connected to the account, when its contacts last synced and whether its login failed | read |
+| `search_crm_contacts` | Searches the contacts HalloFelix synced from the connected CRM by name, e-mail or phone, most relevant first | read |
+| `get_crm_contact` | A synced CRM contact with details read live from the CRM: salutation, address, birthday, phone numbers, e-mail, status | read |
+| `list_crm_archive_destinations` | The contact's contracts, damages and Vorgänge in the CRM, read live; their ids are the archive destinations for calls, chats and documents | read |
+| `list_crm_contact_files` | The documents in the contact's Kundenakte in the CRM, read live | read |
+| `upload_crm_document` | Uploads a file (max. 10 MB, downloaded from a public HTTPS URL) to the connected CRM: into the contact's Kundenakte and/or onto its contracts, damages or Vorgänge | write |
+| `list_customer_crm_contact_matches` | Synced CRM contacts that share a phone number or the e-mail with a HalloFelix customer, and which contact the customer is linked to | read |
+| `link_customer_crm_contact` | Links a customer to a synced CRM contact: the customer's name, phone numbers and e-mail are overwritten with the contact's, and another customer of the account with the contact's phone number is merged into this one (its calls, chats and notes move over and it is deleted) | write, destructive |
+| `archive_call_in_crm` | Stores the call's transcript as PDF in the connected CRM: in the contact's Kundenakte and/or on contracts, damages or Vorgänge | write, destructive |
+| `archive_whatsapp_chat_in_crm` | Stores selected messages and notes of a WhatsApp chat as one PDF in the connected CRM: in the contact's Kundenakte and/or on contracts, damages or Vorgänge | write |
+| `upload_whatsapp_files_to_crm` | Uploads files sent or received in a WhatsApp chat (photos, PDFs, …) to the connected CRM: into the contact's Kundenakte and/or onto contracts, damages or Vorgänge | write |
 | `get_webhook` | Whether an API webhook destination is configured, and its SHA-256 fingerprint (the URL itself is never returned) | read |
 | `set_webhook` | Sets the API webhook URL (public HTTPS) | write, destructive |
+| `get_call_enrichment` | Whether a pre-call enrichment URL is configured, and its SHA-256 fingerprint (the URL itself is never returned) | read |
+| `set_call_enrichment` | Sets or removes (null) the pre-call enrichment URL (public HTTPS) | write, destructive |
 | `update_whatsapp_account` | Changes the inbox settings of a WhatsApp number; only sent fields change | write, destructive |
 | `list_whatsapp_template_folders` | Template folders of a WhatsApp number, each with its templates | read |
 | `create_whatsapp_template_folder` | Creates a template folder (exists only in HalloFelix, not at Meta) | write |
