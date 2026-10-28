@@ -1,6 +1,6 @@
-# HalloFelix MCP Server
+# HalloFelix von InsurMagic – MCP Server
 
-Official [Model Context Protocol](https://modelcontextprotocol.io) server for [HalloFelix](https://www.hallofelix.de), the AI phone and WhatsApp assistant for insurance brokers in Germany, Austria and Switzerland.
+Official [Model Context Protocol](https://modelcontextprotocol.io) server for [HalloFelix von InsurMagic](https://www.hallofelix.de), the AI phone and WhatsApp assistant for insurance brokers in Germany, Austria and Switzerland.
 
 Connect Claude, ChatGPT, Cursor, VS Code or any MCP client to your HalloFelix account and let your AI agent read calls and transcripts, manage customers and outbound call campaigns, tune your voice and WhatsApp assistants, and work your WhatsApp inbox.
 
