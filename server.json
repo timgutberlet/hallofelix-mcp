@@ -1,0 +1,18 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.timgutberlet/hallofelix",
+  "title": "HalloFelix",
+  "description": "AI phone and WhatsApp assistant for insurance brokers: calls, transcripts, campaigns, WhatsApp.",
+  "version": "1.0.0",
+  "websiteUrl": "https://www.hallofelix.de",
+  "repository": {
+    "url": "https://github.com/timgutberlet/hallofelix-mcp",
+    "source": "github"
+  },
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://app.hallofelix.de/api/mcp"
+    }
+  ]
+}
