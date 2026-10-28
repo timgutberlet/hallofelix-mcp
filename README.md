@@ -85,22 +85,22 @@ codex mcp login hallofelix
 
 | Tool | What it does | Access |
 |---|---|---|
-| `list_calls` | Lists phone calls handled by the HalloFelix voice AI (inbound and outbound) with transcript, summary, extracted data points and task status | read |
+| `list_calls` | Lists phone calls handled by the HalloFelix voice AI (inbound and outbound) with transcript, summary, extracted data points and task (status with its dashboard label, assignee name, task type) | read |
 | `get_call` | Full call record: transcript, summary, summary data points, customer, campaign and assistant | read |
-| `update_call` | Rates a call and sets its task: status, assignee (team member user id) and task type | write, destructive |
+| `update_call` | Rates a call and sets its task: status, assignee (team member by id, name or e-mail) and task type (Vorgang, by id or name) | write, destructive |
 | `bulk_update_call_status` | Sets the task status of up to 1000 calls at once | write, destructive |
 | `delete_call` | Permanently deletes a call with its recording, transcript, task and notes | write, destructive |
 | `start_outbound_call` | Starts a real phone call: the AI call assistant phones the customer's primary number now (or at scheduled_at) | write |
 | `list_call_notes` | Internal notes on a call's task, newest first | read |
 | `add_call_note` | Adds an internal note to a call's task | write |
-| `list_emails` | Lists e-mails handled by the HalloFelix e-mail assistant, newest first, with summary, customer and task status | read |
+| `list_emails` | Lists e-mails handled by the HalloFelix e-mail assistant, newest first, with summary, customer and task (status with its dashboard label, assignee name, task type) | read |
 | `get_email` | Full e-mail record: sender, recipients, subject, body, summary, customer and task | read |
-| `update_email` | Rates an e-mail and sets its task: status, assignee (team member user id) and task type | write, destructive |
+| `update_email` | Rates an e-mail and sets its task: status, assignee (team member by id, name or e-mail) and task type (Vorgang, by id or name) | write, destructive |
 | `list_email_notes` | Internal notes on an e-mail's task, newest first | read |
 | `add_email_note` | Adds an internal note to an e-mail's task | write |
 | `update_note` | Changes the text of a call, e-mail or customer note | write, destructive |
 | `delete_note` | Permanently deletes a call, e-mail or customer note | write, destructive |
-| `list_customers` | Lists customers (contacts the AI calls or chats with) with phone numbers, call count and last call time | read |
+| `list_customers` | Lists customers (contacts the AI calls or chats with) with phone numbers (type with its dashboard label), call handling (Anrufbehandlung, with label), call count and last call time | read |
 | `get_customer` | Full customer record | read |
 | `create_customer` | Creates a customer | write |
 | `import_customers` | Creates up to 500 customers in one call | write |
@@ -115,22 +115,23 @@ codex mcp login hallofelix
 | `add_customer_memory_fact` | Adds a fact the AI should remember about a customer | write |
 | `update_customer_memory_fact` | Corrects a fact (value) or rejects it (status "rejected", also hides a CRM fact) | write, destructive |
 | `delete_customer_memory_fact` | Permanently deletes a memory fact (CRM facts cannot be deleted, only rejected) | write, destructive |
-| `list_campaigns` | Lists outbound call campaigns with success and answer rates | read |
+| `list_campaigns` | Lists outbound call campaigns with status (and its dashboard label), success and answer rates | read |
 | `get_campaign` | Full campaign record with computed statistics | read |
 | `create_campaign` | Creates an outbound call campaign | write |
 | `start_campaign` | Starts or resumes a campaign: the AI begins calling its customers | write |
 | `set_campaign_status` | Changes a campaign run status | write, destructive |
 | `update_campaign` | Edits a draft campaign (name, assistant, first sentence, goal, attempts, retry interval, customers, schedule, business hours; customer_ids replaces the customer list) and/or archives or unarchives any campaign | write, destructive |
 | `delete_campaign` | Permanently deletes a campaign (its calls stay, without the campaign link) | write, destructive |
-| `list_call_assistants` | Lists the voice AI phone assistants (id, name, phone number, voice, usage) | read |
-| `get_call_assistant` | Full editable configuration of a call assistant (greeting, voice, routing, SMS/email, booking, opening hours, …) | read |
+| `list_call_assistants` | Lists the voice AI phone assistants (id, name, phone number, voice id and name, usage) | read |
+| `get_call_assistant` | Full editable configuration of a call assistant (greeting, voice, routing, SMS/email, booking, opening hours, Vorgänge, …) | read |
 | `update_call_assistant` | Changes settings of a live call assistant | write, destructive |
+| `list_voices` | Lists the voices a call assistant can speak with, as offered in the dashboard: id (the stored call_voice value), name, gender, description, whether recommended or newly added, and a preview recording URL | read |
 | `list_whatsapp_assistants` | Lists the WhatsApp AI assistants | read |
-| `get_whatsapp_assistant` | Full editable configuration of a WhatsApp AI assistant | read |
+| `get_whatsapp_assistant` | Full editable configuration of a WhatsApp AI assistant, with the dashboard names of the AI schedule, the Vorgänge and the handoff targets next to their values and ids | read |
 | `update_whatsapp_assistant` | Changes settings of a live WhatsApp assistant | write, destructive |
 | `create_call_assistant` | Creates a new call assistant | write |
 | `list_email_assistants` | Lists the e-mail AI assistants (id, name, usage) | read |
-| `get_email_assistant` | Name, instructions and Vorgänge (task_type_ids) of an e-mail assistant | read |
+| `get_email_assistant` | Name, instructions and Vorgänge (task_type_ids, and task_types with their names) of an e-mail assistant | read |
 | `create_email_assistant` | Creates an e-mail assistant with the account default Vorgänge | write |
 | `update_email_assistant` | Changes an e-mail assistant | write, destructive |
 | `create_whatsapp_assistant` | Creates a WhatsApp assistant (counts against the assistant limit) | write |
@@ -139,15 +140,15 @@ codex mcp login hallofelix
 | `resolve_whatsapp_macro_run` | Closes a macro run by hand (state resolved_manually); nothing is sent | write |
 | `retry_whatsapp_macro_run` | Sends the macro run document to the customer again over WhatsApp | write |
 | `test_whatsapp_assistant` | Sends a test message to a WhatsApp assistant and returns its simulated reply (or the macro it would fire) | write |
-| `list_users` | Lists the team members a WhatsApp chat can be assigned to (their id is the assigned_user_id of a chat) | read |
+| `list_users` | Lists the team members a WhatsApp chat can be assigned to, with id, name and e-mail (the id is the assigned_user_id of a chat) | read |
 | `get_member_limit` | The account's member limit from its subscription, the number of billable members and whether another member can be invited | read |
 | `invite_team_member` | Adds a person to the HalloFelix account and sends them an invitation e-mail (new users get a sign-in link) | write |
 | `remove_team_member` | Removes a member from the account: they lose access, their per-user data in this account (push subscriptions, read state, voice clip, Keasy connection) is deleted and the WhatsApp chats assigned to them become unassigned | write, destructive |
 | `list_whatsapp_accounts` | Lists the connected WhatsApp business numbers (inboxes) with their inbox settings | read |
-| `get_whatsapp_account` | One connected WhatsApp business number with its inbox settings (AI, read receipts, automated messages, opening hours, AI schedule, assistant) | read |
-| `list_whatsapp_conversations` | Lists WhatsApp chats with labels, customer, assignment and last message | read |
-| `get_whatsapp_conversation` | One WhatsApp chat with labels, customer, assignment and last message | read |
-| `update_whatsapp_conversation` | Close/reopen, snooze, assign (assigned_user_id = team member user id; null hands the chat back to the AI), set partner control, pause the AI for the customer, mark read/unread, name the contact, link a customer or set the notes the AI reads about the contact | write, destructive |
+| `get_whatsapp_account` | One connected WhatsApp business number with its inbox settings (AI, read receipts, automated messages, opening hours, AI schedule, assistant), with the dashboard labels of read receipts and AI schedule and the assistant name | read |
+| `list_whatsapp_conversations` | Lists WhatsApp chats with labels, customer, assignment (user id and name), status with its inbox label (Offen, Erledigt, KI deaktiviert) and last message | read |
+| `get_whatsapp_conversation` | One WhatsApp chat with labels, customer, assignment (user id and name), status with its inbox label and last message | read |
+| `update_whatsapp_conversation` | Close (Erledigt) or reopen, snooze, assign (assigned_user_id = team member by user id, full name, first name or e-mail; null hands the chat back to the AI), set partner control, pause the AI for the customer, mark read/unread, name the contact, link a customer or set the notes the AI reads about the contact | write, destructive |
 | `list_whatsapp_messages` | Messages of a WhatsApp chat, oldest first | read |
 | `send_whatsapp_message` | Sends a message into an existing WhatsApp chat on behalf of the business: text, reply buttons (1-3, titles max 20 chars), a list (1-10 rows) or a template | write |
 | `start_whatsapp_conversation` | Sends an approved template to a phone number, creating the contact and chat if needed (new chats always need a template) | write |
